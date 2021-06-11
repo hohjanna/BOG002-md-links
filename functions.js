@@ -1,12 +1,16 @@
 const fs = require('fs')
 const markdownLinkExtractor = require('markdown-link-extractor');
+const { resolve } = require('path');
+const http = require('http');
+const https = require('https');
 
-//1 function: Read file
-//2 function: Extract links
-//3 function: Push objects(links) into array
-//4 function: get protocol HTTP
-//5 function: validate link status
-
+//1 function: Read directory
+//2 function: Read file
+//3 function: Extract links
+//4 function: Push objects(links) into array
+//5 function: Get protocol HTTP
+//6 function: Validate link status
+//7 function: Stats
 
 const readFiles = (path) => new Promise((resolve, reject) => {
     fs.readFile(path, 'utf8', (err, data) => {
@@ -35,43 +39,37 @@ const objLink = (links, path) => {
     return arrLinks
 }
 
-const linkProtocol = (link) => {
-    const url = new URL(link);
-    const protocol = url.protocol;
-    protocol === 'https:' ? (protocol = https) : (protocol = http)
-    return protocol;
+const newObjLink = (array) => {
+    const arrayPromise = array.map(obj => checkLinkStatus(obj))
+    return arrayPromise
 }
 
+const linkProtocol = (link) => {
+    const url = new URL(link);
+    let protocol = url.protocol;
+    protocol === 'https:' ? (protocol = https) : (protocol = http) //Hacerlo mas simple
+    return protocol
+}
 
 const checkLinkStatus = (object) => {
     const pathName = object.href
     const http = linkProtocol(pathName);
-    const status = new Promise((resolve, reject) => {
+    const status = new Promise(resolve => {
         http.get(pathName, (res) => {
-            const { statusNumber } = res;
-            if (statusNumber !== 200 && statusNumber !== 301) {
-                resolve({...object, status: fail, status_code: statusNumber })
+            const { statusCode } = res;
+            if (statusCode !== 200 && statusCode !== 301) {
+                resolve({...object, status: 'fail', status_code: statusCode })
             } else {
-                resolve({...object, status: ok, status_code: statusNumber })
+                resolve({...object, status: 'ok', status_code: statusCode })
             }
         });
     });
-    return status;
+    return status
 }
-
-
-/*http.get(pathName, function(res) {
-    console.log(res);
-
-}).on('error', function(e) {
-    console.log(e);
-
-});;*/
-
 
 module.exports = {
     readFiles,
     extractLinks,
     objLink,
-    checkLinkStatus
+    newObjLink,
 };

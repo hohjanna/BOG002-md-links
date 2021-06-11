@@ -1,3 +1,4 @@
+const { ReadStream } = require('fs');
 const path = require('path');
 const functions = require('./functions.js');
 
@@ -11,91 +12,46 @@ const functions = require('./functions.js');
 */
 
 
-const file = './README.png'
+const file = './README.md'
 
-const mdLinks = (file) => {
+const mdLinks = (file, validate) => {
     const extFile = path.extname(file);
     if (extFile !== '.md') {
         console.log('El archivo no se puede leer')
     }
-    functions.readFiles(file)
+    return functions.readFiles(file)
         .then(functions.extractLinks)
         .then(links => functions.objLink(links, file))
-        .then(console.log)
+        .then(array => {
+            if (validate === true) {
+                Promise.all(functions.newObjLink(arr)).then(console.log)
+            } else {
+                console.log(array)
+            }
+        })
         .catch(error => error)
 
 }
-mdLinks(file)
+mdLinks(file, { validate: true })
 
 
 
+// const arr = [{
+//         file: 'readme.md',
+//         href: 'https://docs.npmjs.com/getting-started/publishing-npm-packages',
+//         text: 'hooa mndo'
+//     },
+//     {
+//         file: 'leeme.md',
+//         href: 'https://docs.npmjs.com/getting-started/publishing-npm-packages',
+//         text: 'hooa mndo'
+//     }
+// ]
+
+// Promise.all(functions.newObjLink(arr)).then(console.log)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Function MD-LINKS
-
-/*const mdLinks = (file, options = { validate: false }) => {
-
-    const linksFile = new Promise((resolve, reject) => {
-        const ext = path.extname(file);
-        if (ext === '.md') {
-
-            functions
-                .readFiles(file)
-                .then((data) => {
-                    const getLinks = functions.extractLinks(data)
-                    const arrLinks = functions.objLink(getLinks, onePath)
-                    if (options.validate) {
-
-
-                    } else {
-                        resolve(arrLinks)
-                    }
-
-
-                })
-
-            return linksFile;
-        } else {
-            console.log('El archivo no se puede leer')
-        }
-    })
-}*/
-
-
-
-
-
-
-
-
-// module.exports = () => {
+// module.exports =  {
 //     mdLinks
 // };
