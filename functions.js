@@ -1,15 +1,14 @@
 const fs = require('fs')
 const markdownLinkExtractor = require('markdown-link-extractor');
-const { resolve } = require('path');
 const http = require('http');
 const https = require('https');
 
 //1 function: Read directory
-//2 function: Read file
-//3 function: Extract links
-//4 function: Push objects(links) into array
-//5 function: Get protocol HTTP
-//6 function: Validate link status
+//2 function: Read file - Done
+//3 function: Extract links - Done
+//4 function: Push objects(links) into array - Done
+//5 function: Get protocol HTTP - Done
+//6 function: Validate link status - Done
 //7 function: Stats
 
 const readFiles = (path) => new Promise((resolve, reject) => {

@@ -1,4 +1,3 @@
-const { ReadStream } = require('fs');
 const path = require('path');
 const functions = require('./functions.js');
 
@@ -12,7 +11,7 @@ const functions = require('./functions.js');
 */
 
 
-const file = './README.md'
+const file = './file.md'
 
 const mdLinks = (file, validate) => {
     const extFile = path.extname(file);
@@ -24,31 +23,17 @@ const mdLinks = (file, validate) => {
         .then(links => functions.objLink(links, file))
         .then(array => {
             if (validate === true) {
-                Promise.all(functions.newObjLink(arr)).then(console.log)
+                Promise.all(functions.newObjLink(array)).then(console.log)
             } else {
-                console.log(array)
+                console.log(arrPromises)
             }
         })
         .catch(error => error)
 
 }
-mdLinks(file, { validate: true })
+mdLinks(file, true)
 
 
-
-// const arr = [{
-//         file: 'readme.md',
-//         href: 'https://docs.npmjs.com/getting-started/publishing-npm-packages',
-//         text: 'hooa mndo'
-//     },
-//     {
-//         file: 'leeme.md',
-//         href: 'https://docs.npmjs.com/getting-started/publishing-npm-packages',
-//         text: 'hooa mndo'
-//     }
-// ]
-
-// Promise.all(functions.newObjLink(arr)).then(console.log)
 
 
 
