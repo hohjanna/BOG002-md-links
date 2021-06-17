@@ -3,6 +3,7 @@ const markdownLinkExtractor = require('markdown-link-extractor');
 const http = require('http');
 const https = require('https');
 
+
 //1 function: Read directory
 //2 function: Read file - Done
 //3 function: Extract links - Done
