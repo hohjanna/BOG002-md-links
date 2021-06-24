@@ -1,26 +1,29 @@
 const fs = require('fs')
 const markdownLinkExtractor = require('markdown-link-extractor');
-const http = require('http');
-const https = require('https');
+const axios = require('axios');
+const dir = require('node-dir');
+const path = require('path');
 
 
-//1 function: Read directory
-//2 function: Read file - Done
-//3 function: Extract links - Done
-//4 function: Push objects(links) into array - Done
-//5 function: Get protocol HTTP - Done
-//6 function: Validate link status - Done
-//7 function: Stats
+const isDirectory = route => fs.statSync(route).isDirectory();
+const isFile = route => fs.statSync(route).isFile();
 
-const readFiles = (path) => new Promise((resolve, reject) => {
-    fs.readFile(path, 'utf8', (err, data) => {
-        if (err) {
-            reject(err)
-        } else {
-            resolve(data)
+const readDirectory = route => new Promise(resolve => {
+    if (isDirectory(route)) {
+        dir.promiseFiles(route)
+            .then(files => files.filter(i => path.extname(i) === '.md'))
+            .then(mdFiles => {
+                const mdFilesArr = mdFiles.map(file => fs.readFileSync(file, 'utf8'))
+                resolve(mdFilesArr.join(' '))
+            })
+    } else if (isFile(route)) {
+        if (path.extname(route) === '.md') {
+            const data = fs.readFileSync(route, 'utf8');
+            resolve(data);
         }
-    });
+    }
 })
+
 
 const extractLinks = (data) => markdownLinkExtractor(data, true);
 
@@ -44,31 +47,22 @@ const newObjLink = (array) => {
     return arrayPromise
 }
 
-const linkProtocol = (link) => {
-    const url = new URL(link);
-    let protocol = url.protocol;
-    protocol === 'https:' ? (protocol = https) : (protocol = http) //Hacerlo mas simple
-    return protocol
-}
-
-const checkLinkStatus = (object) => {
-    const pathName = object.href
-    const http = linkProtocol(pathName);
+const checkLinkStatus = object => {
+    const pathName = object.href;
     const status = new Promise(resolve => {
-        http.get(pathName, (res) => {
-            const { statusCode } = res;
-            if (statusCode !== 200 && statusCode !== 301) {
-                resolve({...object, status: 'fail', status_code: statusCode })
-            } else {
-                resolve({...object, status: 'ok', status_code: statusCode })
-            }
-        });
+        axios.get(pathName)
+            .then(response => {
+                resolve({...object, statusOk: 'ok', status: response.status })
+            })
+            .catch(error => {
+                resolve({...object, statusOk: 'fail', status: error.response.status })
+            })
     });
     return status
 }
 
 module.exports = {
-    readFiles,
+    readDirectory,
     extractLinks,
     objLink,
     newObjLink,

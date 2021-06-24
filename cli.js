@@ -27,8 +27,8 @@ if (argv.validate) {
                 File: object.file,
                 href: object.href,
                 text: object.text,
-                status: object.status,
-                status_code: object.status_code
+                statusOk: object.statusOk,
+                status: object.status
             })
         })
     })
