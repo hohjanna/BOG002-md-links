@@ -11,7 +11,7 @@ const isFile = route => fs.statSync(route).isFile();
 const readDirectory = route => new Promise(resolve => {
     if (isDirectory(route)) {
         dir.promiseFiles(route)
-            .then(files => files.filter(i => path.extname(i) === '.md'))
+            .then(files => files.filter(file => path.extname(file) === '.md'))
             .then(mdFiles => {
                 const mdFilesArr = mdFiles.map(file => fs.readFileSync(file, 'utf8'))
                 resolve(mdFilesArr.join(' '))
@@ -24,8 +24,7 @@ const readDirectory = route => new Promise(resolve => {
     }
 })
 
-
-const extractLinks = (data) => markdownLinkExtractor(data, true);
+const extractLinks = data => markdownLinkExtractor(data, true);
 
 const objLink = (links, path) => {
     const arrLinks = [];
@@ -42,7 +41,7 @@ const objLink = (links, path) => {
     return arrLinks
 }
 
-const newObjLink = (array) => {
+const newObjLink = array => {
     const arrayPromise = array.map(obj => checkLinkStatus(obj))
     return arrayPromise
 }
