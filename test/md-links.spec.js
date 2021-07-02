@@ -6,7 +6,7 @@ describe('mdLinks', () => {
     test('should be a function', () => {
         expect(typeof mdLinks.mdLinks).toBe('function');
     });
-    test('returns a promise', () => {
+    test('should returns a promise', () => {
         const route = './dir';
         expect(mdLinks.mdLinks(route) instanceof Promise).toBeTruthy();
     });
@@ -21,7 +21,6 @@ describe('mdLinks', () => {
     });
     test('should resolve an array that contents objects with validation', () => {
         const route = 'oneFile.md';
-        expect.assertions(1);
         return mdLinks.mdLinks(route, true).then(res => expect(res).toEqual(mocks.mdLinksValidate));
     });
 });

@@ -8,7 +8,7 @@ const path = require('path');
 const isDirectory = route => fs.statSync(route).isDirectory();
 const isFile = route => fs.statSync(route).isFile();
 
-const readDirectory = route => new Promise(resolve => {
+const dirRecursion = route => new Promise(resolve => {
     if (isDirectory(route)) {
         dir.promiseFiles(route)
             .then(files => files.filter(file => path.extname(file) === '.md'))
@@ -61,7 +61,7 @@ const checkLinkStatus = object => {
 }
 
 module.exports = {
-    readDirectory,
+    dirRecursion,
     extractLinks,
     objLink,
     newObjLink,

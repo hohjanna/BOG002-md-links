@@ -1,9 +1,7 @@
-const path = require('path');
 const functions = require('./functions.js');
 
-
 const mdLinks = (file, validate) => {
-    return functions.readDirectory(file)
+    return functions.dirRecursion(file)
         .then(functions.extractLinks)
         .then(links => functions.objLink(links, file))
         .then(array => {
